@@ -91,7 +91,7 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-12 sm:py-16 lg:py-20">
+      <section className="py-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
@@ -135,7 +135,7 @@ export default function HomePage() {
       </section>
 
       {/* Grid de Semanas */}
-      <main className="flex-1 py-8">
+      <main className="flex-1 py-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-2xl font-semibold mb-6">Semanas</h3>
           {filteredWeeks.length > 0 ? (
