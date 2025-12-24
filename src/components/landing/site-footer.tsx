@@ -28,3 +28,4 @@ export function SiteFooter({ copyright, links }: FooterProps) {
   );
 }
 
+

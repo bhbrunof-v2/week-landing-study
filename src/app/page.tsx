@@ -1,65 +1,167 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { useState } from "react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Separator } from "@/components/ui/separator"
+import { WeekCard, type WeekData, type WeekStatus } from "@/components/landing/week-card"
+
+// Array de semanas - fácil de adicionar novas semanas
+const weeksData: WeekData[] = [
+  {
+    slug: "/week-01",
+    number: "Week 01",
+    status: "Ready",
+    description: "Primeira landing page focada em hero section e CTA",
+    checklist: [
+      "Criar estrutura básica da landing",
+      "Implementar hero section com título impactante",
+      "Adicionar botão CTA principal",
+      "Configurar responsividade mobile-first",
+    ],
+  },
+  {
+    slug: "/week-02",
+    number: "Week 02",
+    status: "In progress",
+    description: "Landing com features grid e testimonials",
+    checklist: [
+      "Criar grid de features com ícones",
+      "Implementar seção de depoimentos",
+      "Adicionar animações sutis",
+      "Otimizar performance",
+    ],
+  },
+  {
+    slug: "/week-03",
+    number: "Week 03",
+    status: "Locked",
+    description: "Landing com pricing table e FAQ",
+    checklist: [
+      "Criar tabela de preços comparativa",
+      "Implementar FAQ com accordion",
+      "Adicionar formulário de contato",
+      "Integrar validação de formulário",
+    ],
+  },
+  {
+    slug: "/week-04",
+    number: "Week 04",
+    status: "Locked",
+    description: "Landing com blog preview e newsletter",
+    checklist: [
+      "Criar preview de posts do blog",
+      "Implementar formulário de newsletter",
+      "Adicionar integração com API",
+      "Configurar analytics",
+    ],
+  },
+]
+
+export default function HomePage() {
+  const [searchTerm, setSearchTerm] = useState("")
+  const [statusFilter, setStatusFilter] = useState<WeekStatus | "All">("All")
+
+  // Filtragem client-side
+  const filteredWeeks = weeksData.filter((week) => {
+    const matchesSearch =
+      week.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      week.description.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    const matchesStatus =
+      statusFilter === "All" || week.status === statusFilter
+
+    return matchesSearch && matchesStatus
+  })
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen flex flex-col bg-background">
+      {/* Header */}
+      <header className="border-b bg-card">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            <h1 className="text-2xl font-bold">Landing Lab</h1>
+            <Button asChild>
+              <Link href="/week-01">Nova semana</Link>
+            </Button>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+      </header>
+
+      {/* Hero Section */}
+      <section className="py-12 sm:py-16 lg:py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+              Treine suas habilidades semana a semana
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground sm:text-xl">
+              Uma landing page por semana para treinar Cursor + shadcn/ui.
+              Desenvolva projetos reais e melhore suas habilidades de forma
+              consistente.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Filtros e Busca */}
+      <section className="border-t bg-card">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <Tabs
+              value={statusFilter}
+              onValueChange={(value) =>
+                setStatusFilter(value as WeekStatus | "All")
+              }
+              className="w-full sm:w-auto"
+            >
+              <TabsList>
+                <TabsTrigger value="All">All</TabsTrigger>
+                <TabsTrigger value="Ready">Ready</TabsTrigger>
+                <TabsTrigger value="In progress">In progress</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <Input
+              type="text"
+              placeholder="Buscar por título ou descrição..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full sm:w-64"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Grid de Semanas */}
+      <main className="flex-1 py-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <h3 className="text-2xl font-semibold mb-6">Semanas</h3>
+          {filteredWeeks.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredWeeks.map((week) => (
+                <WeekCard key={week.slug} week={week} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">
+                Nenhuma semana encontrada com os filtros aplicados.
+              </p>
+            </div>
+          )}
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="border-t bg-card mt-auto">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="text-center text-sm text-muted-foreground">
+            <p>© 2025 Landing Lab. Todos os direitos reservados.</p>
+          </div>
+        </div>
+      </footer>
     </div>
-  );
+  )
 }
